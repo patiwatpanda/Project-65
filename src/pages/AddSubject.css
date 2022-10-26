@@ -1,0 +1,69 @@
+.id{
+    width: 600px;
+      padding: 12px 10px;
+      margin-left: 16px 0;
+      box-sizing: content-box;
+      text-align: left;
+      
+}
+.Boxmaster{
+height: auto;  /*ความสูง*/
+/*font-size: 2rem;*/
+margin-left: 25%;
+margin-top: 20px;
+margin: auto;
+/*margin: 0 auto;*/
+width: 800px;/**/
+/*align-items: center;จัดกึ่งกลางแนวตั้ง*/
+/*justify-content: right;จัดกึ่งกลางแนวนอน*/
+border: 1mm ;
+
+padding: 3rem;
+/*display: flex;*/
+background-color: #f0f0f0;
+
+
+/*padding: 10px;*/
+}
+.Boxmastersmall{
+  height: auto;
+  padding: 3rem;
+  text-align: left;/**/
+}
+.Boxmastercenter{
+  
+  text-align: center;
+}
+.Boxmuilti{
+  text-align: left;
+}
+.BoxSave{
+margin: 0 auto;/**/
+width: 800px;/**/
+align-items: left;/*จัดกึ่งกลางแนวตั้ง*/
+justify-content: left;/*จัดกึ่งกลางแนวนอน*/
+border: 1mm ;/**/
+text-align: left;
+padding: 1rem;
+}
+.Boxlogo{
+margin: 0 auto;/**/
+/*width:2000px;*/
+left: 750px;
+/* align-items: center;/*จัดกึ่งกลางแนวตั้ง
+justify-content: center;/*จัดกึ่งกลางแนวนอน
+border: 1mm ;/*
+padding: 1rem;*/
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  height: 250px;
+  align-content: center;
+  grid-template-rows: 60px 60px;
+  background-color: #362a2b;
+  padding: 10px;
+  height: 250px;
+  z-index:0;
+}

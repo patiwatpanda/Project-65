@@ -1,0 +1,17 @@
+.test {
+    border: 5px solid rgb(0, 0, 0);
+    width:250px;
+    height: 250px;  
+    float:left;
+}
+.Righttest{
+    float:Right;
+}
+.background{
+    background-color:#cdcdcd; 
+}
+.Border{
+    padding:'10px';
+    border:' 2px solid #cdcdcd';
+   
+}

@@ -1,0 +1,23 @@
+.Boxmaster{
+    height: auto;  /*ความสูง*/
+    /*font-size: 2rem;*/
+    margin-left: 25%;
+    margin-top: 20px;
+    margin: auto;
+    /*margin: 0 auto;*/
+    width: 800px;/**/
+    /*align-items: center;จัดกึ่งกลางแนวตั้ง*/
+    /*justify-content: right;จัดกึ่งกลางแนวนอน*/
+    border: 1mm ;
+    
+    padding: 3rem;
+    /*display: flex;*/
+    background-color: #f0f0f0;
+    
+    
+    /*padding: 10px;*/
+    }
+    .Boxmastercenter{
+  
+        text-align: center;
+      }

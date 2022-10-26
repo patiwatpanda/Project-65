@@ -1,0 +1,7 @@
+.h2title{
+margin-left: 5px;
+}
+.flex-containner{
+    display: flex;
+    justify-content: center;
+}

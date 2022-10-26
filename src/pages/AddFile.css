@@ -1,0 +1,19 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    height: 250px;
+    align-content: center;
+    grid-template-rows: 60px 60px;
+    background-color: #362a2b;
+    padding: 10px;
+    height: 250px;
+    z-index:0;
+  }
+  .textFieldbox{
+  padding: 10px;
+    width: auto ;
+  }
+  .textFileFont{
+    width: 50ch;
+    margin-bottom: 5px;
+  }
