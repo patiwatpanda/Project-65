@@ -71,7 +71,8 @@ export default function Login() {
    getUsers()
   }
   const q = query(collection(db, "user"), where("user", "==", seeUser), where("password", "==", seePassword));
-  return ( <div className="lContainer">
+  return (
+     <div className="lContainer">
   <div  className="form" style={{ padding: 40 }} >
    <div className="title">
          Login

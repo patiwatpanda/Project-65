@@ -2,7 +2,8 @@ import React from "react";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import * as IoIcons from "react-icons/io";
-
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 export const Sidenav = [
     {
         title: 'Home',
@@ -11,33 +12,16 @@ export const Sidenav = [
         cName: 'nav-text'
     },
     {
-        title: 'Addteach',
+        title: 'เพิ่มอาจารย์ผู้สอน',
         path: '/addteach',
-        icon: <IoIcons.IoIosPaper />,
+        icon: <AccountCircleIcon />,
         cName: 'nav-text'
     },
     {
         title: 'เพิ่มวิชา',
         path: '/addnewsubject',
-        icon: <FaIcons.FaCartPlus />,
+        icon: <ReceiptLongIcon/>,
         cName: 'nav-text'
     },
-    {
-        title: 'Addfile',
-        path: '/addfile',
-        icon: <IoIcons.IoIosPaper />,
-        cName: 'nav-text'
-    },
-    {
-        title: 'ShowSubject',
-        path: '/Show',
-        icon: <IoIcons.IoIosPaper />,
-        cName: 'nav-text'
-    },
-    {
-        title: 'Video',
-        path: '/video',
-        icon: <IoIcons.IoIosPaper />,
-        cName: 'nav-text'
-    },
+
 ]

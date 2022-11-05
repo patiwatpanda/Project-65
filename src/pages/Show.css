@@ -8,7 +8,7 @@
     float:Right;
 }
 .background{
-    background-color:#cdcdcd; 
+    background-color:hsl(0, 1%, 85%); 
 }
 .Border{
     padding:'10px';

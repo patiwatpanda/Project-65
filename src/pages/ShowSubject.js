@@ -9,7 +9,8 @@ import Row from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import VideocamIcon from '@mui/icons-material/Videocam';
-
+import Divider from '@mui/material/Divider';
+import { reactLocalStorage } from "reactjs-localstorage";
 import { useLocation } from 'react-router-dom';
 import TextField from "@mui/material/TextField";
 import Linkk from '@mui/material/Link';
@@ -169,7 +170,8 @@ const Container = styled('span')(({ theme }) => ({
     const [title, setTitle] = React.useState([]);
     const [detial, setDetail] = React.useState([]);
     const location = useLocation();
-
+  const id = reactLocalStorage.getObject("Xuser")[0]?.id
+//  const userid = reactLocalStorage.getObject("Xuser")[0]?.user
     const [namesubject,setNamesubject] = useState(location.state?.sname?.name);
     const [comment , setCommentsub] = useState(location.state?.sname?.comment);
     const [picturelink ,setPicturelink] = useState(location.state?.sname?.link);
@@ -178,7 +180,6 @@ const Container = styled('span')(({ theme }) => ({
     const [idx,setIdx]= useState(location.state?.sname?.idx);
     console.log(idx,'ss');
     const deleteAll = async (topic) => {
-  
       console.log(topic,"aaaaaa")
       const q = query(titileCollectionRef, where("topic","==", topic))
       const snapshot = await getDocs(q);
@@ -192,19 +193,11 @@ const Container = styled('span')(({ theme }) => ({
       
       getAddfile();
     };
-    const deletesingle = async (topic) => {
-  
-      console.log(topic,"aaaaaa")
-      const q = query(titileCollectionRef, where("topic","==", topic))
-      const snapshot = await getDocs(q);
-      const results = snapshot.docs.map((doc) => ({...doc.data(), id:doc.id}))
-      results.forEach(async (result) =>{
-        const docRef = doc(db,"addfile",result.id)
-        await deleteDoc(docRef);
-      })
-      
-      
-      
+    const deletesingle = async (id) => {
+      console.log(id,"aaaaaa")
+      const userDoc = doc(db, "addfile", id);
+    const a = await deleteDoc(userDoc);
+
       getAddfile();
     };
     function confirmsingle(id) {
@@ -258,33 +251,37 @@ const Container = styled('span')(({ theme }) => ({
    // <Container>    
 <div>
   <div  className='background' >
-  <Box sx={{   display: 'flex' }}>
-  <Paper  sx={{width:'500px',padding:'10px',border:'solid 1px black',m:'auto',mt:'50px'}} className='background'  variant="outlined">
-  <Typography variant="h5" gutterBottom>
+  <Box sx={{ display: 'flex' ,justifyContent: 'space-evenly'}}>
+  <Paper  sx={{width:'500px',mt:'50px',mb:'10px'}} className='background'  variant="outlined">
+  <Typography sx={{m:"10px"}} variant="h5" gutterBottom>
     รายละเอียด
       </Typography>
-      <Typography variant="body2" gutterBottom>
+      <Divider style={{width:'100%'}}/>
+      <Typography sx={{m:"10px"}} variant="body2" gutterBottom>
       {comment }
       </Typography>
      
   </Paper>
-  <Paper variant="outlined" sx={{width:'300px' ,p:'10px',border:'solid 1px black',m:'auto',mt:'10px',mb:'10px'}}>
+  <Paper variant="outlined" sx={{width:'300px' ,p:'10px',border:'solid 1px black',mt:'10px',mb:'10px'}}>
    <img src={picturelink} alt="Girl in a jacket" margin='10px' width="300px" height="200px"/>
    <Typography variant="h5"  gutterBottom>
    { namesubject} 
       </Typography>
+
    </Paper>
-</Box>
+ </Box>
   </div>
   <Box sx={{ display: 'flex',justifyContent: 'space-evenly'}}>
 <Box sx={{}}>
-<Paper  sx={{width:'500px',height:'auto',padding:'10px',mt:'10px' }} variant="outlined">
+<Paper  sx={{width:'500px',height:'auto',mt:'10px' }} variant="outlined">
+<Box sx={{m:"10px"}}>
   <Typography variant="h5" gutterBottom>
       วัตถุประสงค์
       </Typography>
-      {objectt.map((e)=>(
-          <Typography variant="subtitle1" gutterBottom>
-  {e.objectt}
+      </Box>  <Divider style={{width:'100%'}}/>
+      {objectt.map((e,index)=>(
+          <Typography sx={{m:"10px"}} variant="subtitle1" gutterBottom>
+ {index+1}.{e.objectt}
 </Typography>
       ))
 
@@ -292,9 +289,9 @@ const Container = styled('span')(({ theme }) => ({
       }
     
       </Paper>
- 
+    
       </Box>
-      
+
 <Box sx={{  }} > 
 <Typography variant="h6" gutterBottom>
        เนื้อหา
@@ -312,7 +309,7 @@ const Container = styled('span')(({ theme }) => ({
                     }}>add</Button> </Link>  
             </CardTitle>
         
-            {title.filter((ti,i,a) => ( ti.idtop == idx && a.findIndex(v=>v.topic===ti.topic) === i) ).map((titl,i)=>(
+            {title.filter((ti,i,a) => (ti.userid== id && ti.idtop == idx && a.findIndex(v=>v.topic===ti.topic) === i) ).map((titl,i)=>(
     
    
             <Accordion
@@ -354,7 +351,7 @@ const Container = styled('span')(({ theme }) => ({
           <Link  to="/updatefile" state={{sname:ee}}><Button  variant="outlined" size="small"   /**/onClick={() => {
                     //  confirm(ee.id);
                     }}  >edit</Button> </Link>  <Button variant="outlined" color="error" size="small"   /**/onClick={() => {
-                     confirm(ee.id);
+                      confirmsingle(ee.id);
                     }}>delete</Button></span></Box>  </Box>
                 
                  ))}

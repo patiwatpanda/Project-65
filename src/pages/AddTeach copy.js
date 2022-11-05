@@ -32,7 +32,7 @@ import {
 } from "firebase/firestore";
 import { ref,getDownloadURL, uploadBytes} from '@firebase/storage'
 import { upload } from "@testing-library/user-event/dist/upload";
-function AddTeach() {
+function EditProfile() {
   const linkpicture = reactLocalStorage.getObject("Xuser")[0]?.imges
   const nameProfile = reactLocalStorage.getObject("Xuser")[0]?.name
   const lastnameProfile = reactLocalStorage.getObject("Xuser")[0]?.lastname
@@ -120,10 +120,9 @@ function AddTeach() {
                       uploadBytes(imageRef, image,"date_url").then(async()=>{
                         const downloadURL = await getDownloadURL(imageRef)
                         await updateDoc(doc(db,"user",docRef.id),{
-                          image:arrayUnion(downloadURL) 
-                       
-                        })  
-              window.location.reload()        }) 
+                          imges:arrayUnion(downloadURL)
+                        })
+                      })
                     })
          )
               .then((res) => {
@@ -136,7 +135,7 @@ function AddTeach() {
                 setLasName("");
                 setEmail("");
                 setTel("");
-              
+              // window.location.reload()
               })
               .catch((err) => {
                 console.log(err);
@@ -164,7 +163,7 @@ function AddTeach() {
           <Box sx={{display:"flex",justifyContent: 'center',}}  >
         <Card   variant="outlined"
         sx={{
-          m:"auto",mt:"10px", p: 0, maxWidth: 920, mr:"10px",
+          m:"auto",mt:"10px", p: 0, maxWidth: 455, mr:"10px",
         }} >
             <Box
           sx={{
@@ -173,7 +172,7 @@ function AddTeach() {
           display="flex"
           // alignItems="center"
        flexDirection= 'column'
-       
+       justifyContent= 'center'
         >
             <br />
             
@@ -184,14 +183,14 @@ function AddTeach() {
                 fontWeight: "500",
               }}
             >
-           Create User
+           Profile
             </Typography>
           </Box>
          </Box>
           <Divider  style={{width:'100%'}}/>
           
           <br />
-      <Box>
+      
             <FormControl sx={{  pl:"5px",m: 1, width: "50ch" }}>
             
               <TextField
@@ -199,70 +198,73 @@ function AddTeach() {
                 label="User"
                 id="userx"
                 value={userx}
-             
+                size="small"
                 onChange={getUserx}
               />{" "}
             </FormControl> 
-            <FormControl sx={{pl:"5px", m: 1, width: "50ch" }} variant="outlined">
-              <TextField
-                label="Tel"
-                id="tel"
-             value={tel}
-              
-            onChange={getTel}
-              />{""}
-            </FormControl>
             <br />
             <FormControl sx={{ pl:"5px",m: 1, width: "50ch" }} variant="outlined">
               <TextField
                 label="Password"
                 id="passx"
                 value={passx}
-           
+                size="small"
                 onChange={getPassx}
               />{" "}
-            </FormControl>
-          <FormControl sx={{pl:"5px", m: 1, width: "50ch" }} variant="outlined">
-              <TextField
-                label="Email"
-                id="email"
-              value={email}
-            
-            onChange={getEmail}
-              />{""}
             </FormControl>
             <br />
             <FormControl sx={{m: 1, width: "25ch" }} variant="outlined">
               <TextField label="Name" id="name" 
-              value={name}  
+              value={name}  size="small"
               onChange={getName} />{" "}
               
             </FormControl>
               <FormControl>
               <TextField variant="outlined" sx={{mt:1, width: "25ch" ,mr:"5px" }} label="LastName" id="lastname" 
               value={lastname}  
-             
+              size="small"
               onChange={getLastName}
             />{""}
               </FormControl>
-              <FormControl sx={{pl:"5px", m: 1, width: "50ch" }} variant="outlined">
+            <br />
+            <FormControl sx={{pl:"5px", m: 1, width: "50ch" }} variant="outlined">
+              <TextField
+                label="Email"
+                id="email"
+              value={email}
+                size="small"
+            onChange={getEmail}
+              />{""}
+            </FormControl>
+         
+            <FormControl sx={{pl:"5px", m: 1, width: "50ch" }} variant="outlined">
+              <TextField
+                label="Tel"
+                id="tel"
+             value={tel}
+                size="small"
+            onChange={getTel}
+              />{""}
+            </FormControl>
+         
+            <FormControl sx={{pl:"5px", m: 1, width: "50ch" }} variant="outlined">
               <InputLabel id="demo-simple-select-label">Role</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="rolex"
                 value={rolex}
                 label="Role"
-             
+                size="small"
                 onChange={getRolex}
               >
                 <MenuItem value="admin">admin</MenuItem>
                 <MenuItem value="user">user</MenuItem>
               </Select>
             </FormControl>
-              <FormControl sx={{pl:"5px", m: 1, width: "1000px" }} variant="outlined">
-              <Card variant="outlined"
+            <br />
+            <Card variant="outlined"
         sx={{
-          m:"auto",mt:"10px", p: '10px', maxWidth: 850, m:"10px",
+          m:"auto",mt:"10px", p: '10px', maxWidth: 500, m:"10px",
         }} >
             <div className="container">
               
@@ -278,9 +280,6 @@ function AddTeach() {
         <ul>{files}</ul>
       </aside>
     </div> </Card>
-    </FormControl>
-
-            </Box>
     <Box sx={{display:"flex",justifyContent: 'center',alignItems:'center'}}>
             <Button
               variant="contained"
@@ -291,6 +290,48 @@ function AddTeach() {
             </Button>
      </Box>
          
+        </Card>
+        </Box>
+        <Box   sx={{  }} >
+        <Card   variant="outlined"
+        sx={{
+         m:"auto",mt:"10px", p: 0, maxWidth: 450
+        }}>
+          <CardHeader color="danger"  title=""/>
+              
+            
+      
+            <Box
+          sx={{
+            padding: "15px ",display:"flex",justifyContent:'center', // flexDirection: 'column'
+          }}
+     
+      //   alignItems="center"
+          
+        
+        >
+            <br />
+              
+<Box sx={{display:"flex",alignItems:'center',justifyContent: 'center',flexDirection: 'column' }}>
+
+               <Avatar
+     alt="Remy Sharp"
+     src={linkpicture}
+     sx={{ display:"flex",justifyContent: 'center' ,width: 150, height: 150 }}
+   /> 
+ <br/>
+         <Typography  sx={{display:"flex",justifyContent: 'center'}}variant="subtitle1" gutterBottom>
+       Name:{nameProfile} {lastnameProfile}
+      </Typography>
+  
+      <Typography  sx={{display:"flex",justifyContent: 'center'}}variant="subtitle1" gutterBottom>
+          Email:{emailProfile}
+      </Typography>
+      <Typography  sx={{display:"flex",justifyContent: 'center'}}variant="subtitle1" gutterBottom>
+          Tel:{telProfile}
+      </Typography>
+          </Box>
+          </Box>
         </Card>
         </Box>
         </Box>

@@ -8,12 +8,13 @@ import Box from "@mui/material/Box";
 import Divider from '@mui/material/Divider';
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { db,storage } from "../firebase-config";
+import { app,db,storage } from "../firebase-config";
 import Table from "@mui/material/Table";
 import { reactLocalStorage } from "reactjs-localstorage";
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
+import {BrowserRouter as Router, Link} from "react-router-dom";
 import Card from '@mui/material/Card';
 import Paper from "@mui/material/Paper";
 import "./AddSubject.css";
@@ -23,6 +24,7 @@ import {
   collection,
   addDoc,
   doc,
+  documentId,
   deleteDoc,
   getDocs,
   query,
@@ -32,27 +34,30 @@ import {
 } from "firebase/firestore";
 import { ref,getDownloadURL, uploadBytes} from '@firebase/storage'
 import { upload } from "@testing-library/user-event/dist/upload";
-function AddTeach() {
+function  Profile() {
   const linkpicture = reactLocalStorage.getObject("Xuser")[0]?.imges
   const nameProfile = reactLocalStorage.getObject("Xuser")[0]?.name
   const lastnameProfile = reactLocalStorage.getObject("Xuser")[0]?.lastname
   const emailProfile = reactLocalStorage.getObject("Xuser")[0]?.email
   const telProfile = reactLocalStorage.getObject("Xuser")[0]?.tel
-    const [userx, setUserx] = useState([]);
-    const [name, setName] = useState("");
-    const [passx, setPassx] = useState("");
-    const [rolex, setRolex] = useState("");
-    const [email, setEmail] = useState("");
-    const [lastname, setLasName] = useState("");
-    const [tel,setTel] = useState("");
-    const [picture, setPicture] = useState([]);
+  const passProfile = reactLocalStorage.getObject("Xuser")[0]?.password
+  const userProfile = reactLocalStorage.getObject("Xuser")[0]?.user
+  const roleProfile = reactLocalStorage.getObject("Xuser")[0]?.role
+  const idProfile = reactLocalStorage.getObject("Xuser")[0]?.id
+    const [userx, setUserx] = useState(userProfile);
+    const [name, setName] = useState(nameProfile);
+    const [passx, setPassx] = useState(passProfile);
+    const [rolex, setRolex] = useState(roleProfile);
+    const [email, setEmail] = useState(emailProfile);
+    const [lastname, setLasName] = useState(lastnameProfile);
+    const [tel,setTel] = useState(telProfile);
+    const [user, setUser] = useState([]);
     const [after, setAfter] = useState(0);
     //  const usersCollectionRef = collection(db, "user");
     const [equal, setEqual] = useState(0);
     const [userror, setUserror] = useState(false);
     const [passerror, setPasserror] = useState(false);
-    const [add, setUsers] = useState([]);
-    const usersCollectionRef = collection(db, "addteach");
+    const usersCollectionRef = collection(db, "user");
     const {getRootProps, getInputProps, open, acceptedFiles} = useDropzone({
       // Disable click and keydown behavior
       noClick: true,
@@ -65,32 +70,18 @@ function AddTeach() {
         {file.path} - {file.size} bytes
       </li>
     ));
-    const getUserx = (e) => {
-        setUserx(e.target.value);
-      };
-      const getPassx = (e) => {
-        setPassx(e.target.value);
-      };
-      const getRolex = (e) => {
-        setRolex(e.target.value);
-      };
-      const getName = (e) => {
-        setName(e.target.value);
-      };
-      const getEmail = (e) => {
-        setEmail(e.target.value);
-      };
-      const getLastName =(e)=> {
-        setLasName(e.target.value);
-      }
-      const getTel =(e)=>{
-        setTel(e.target.value);
-      }
-      const getPicture = async () => {
-        const q = query(usersCollectionRef);
+   console.log(idProfile,"aa");
+   console.log(user,"a");
+      const getUser = async () => {//,where(documentId(),"==",idProfile)
+        const q = query(usersCollectionRef,where(documentId(),"==",idProfile));
+        console.log(q,"Error");
         const data = await getDocs(q);
-       
-        setPicture(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+        if (data.docs.length >= 1) {
+        setUser(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+        }
+        else{
+            console.log("Error");
+        }
       }
     const getUsers = async (e) => {
         const q = query(collection(db, "user"), where("user", "==", userx));
@@ -120,10 +111,9 @@ function AddTeach() {
                       uploadBytes(imageRef, image,"date_url").then(async()=>{
                         const downloadURL = await getDownloadURL(imageRef)
                         await updateDoc(doc(db,"user",docRef.id),{
-                          image:arrayUnion(downloadURL) 
-                       
-                        })  
-              window.location.reload()        }) 
+                          imges:arrayUnion(downloadURL)
+                        })
+                      })
                     })
          )
               .then((res) => {
@@ -136,7 +126,7 @@ function AddTeach() {
                 setLasName("");
                 setEmail("");
                 setTel("");
-              
+              // window.location.reload()
               })
               .catch((err) => {
                 console.log(err);
@@ -149,8 +139,18 @@ function AddTeach() {
           }
         }
       };
+    
+      useEffect(() => {
+        //  getSubjects();
+         getUser();
+      //  reactLocalStorage.getItem('Xuser');
+
+        }, []);
+  /* */
+      
     return(
-      <Box
+ 
+         <Box
       sx={{
         display: 'flex',
         justifyContent: 'center',
@@ -159,141 +159,169 @@ function AddTeach() {
 
         borderRadius: 1,
       }}
-    >
-    
-          <Box sx={{display:"flex",justifyContent: 'center',}}  >
+    > 
+            <Box   sx={{  }} >
         <Card   variant="outlined"
         sx={{
-          m:"auto",mt:"10px", p: 0, maxWidth: 920, mr:"10px",
-        }} >
+         m:"auto",mt:"10px", p: 0, maxWidth: 450 
+        }}>
+          <CardHeader color="danger"  title=""/>
             <Box
+          sx={{
+            padding: "15px ",display:"flex",justifyContent:'center', // flexDirection: 'column'
+          }}
+     
+      //   alignItems="center"
+          
+        
+        >
+            <br />
+            {user.map((e)=>(      
+<Box sx={{display:"flex",alignItems:'center',justifyContent: 'center',flexDirection: 'column' }}>
+
+               <Avatar
+     alt="Remy Sharp"
+     src={e.image}
+     sx={{ display:"flex",justifyContent: 'center' ,width: 150, height: 150 }}
+   /> 
+ <br/>
+         <Typography  sx={{display:"flex",justifyContent: 'center'}}variant="subtitle1" gutterBottom>
+       Name:{e.name} {e.lastname}
+      </Typography>
+  
+      <Typography  sx={{display:"flex",justifyContent: 'center'}}variant="subtitle1" gutterBottom>
+          Email:{e.email}
+      </Typography>
+      <Typography  sx={{display:"flex",justifyContent: 'center'}}variant="subtitle1" gutterBottom>
+          Tel:{e.tel}
+      </Typography>
+          </Box> 
+          ))} 
+          </Box>
+             
+        </Card>
+        </Box>
+{user.map((e)=>(
+
+          <Box sx={{display:"flex",justifyContent: 'center',ml:"10px"}}  >
+        <Card   variant="outlined"
+        sx={{
+          m:"auto",mt:"10px", p: 0, maxWidth: 1000, mr:"10px",
+        }} >
+        <Box
           sx={{
             padding: "15px ",
           }}
           display="flex"
           // alignItems="center"
-       flexDirection= 'column'
-       
+       flexDirection = 'column'
+       justifyContent= 'center'
         >
             <br />
-            
+                  
           <Box flexGrow={1} component="div">
             <Typography
+             variant="h4"
               sx={{
                 fontSize: "18px",
                 fontWeight: "500",
               }}
             >
-           Create User
+            Profile
             </Typography>
-          </Box>
-         </Box>
+          </Box> 
+         </Box>   
           <Divider  style={{width:'100%'}}/>
-          
+      
           <br />
-      <Box>
+      
             <FormControl sx={{  pl:"5px",m: 1, width: "50ch" }}>
             
               <TextField
+                     disabled
                variant="outlined"
                 label="User"
                 id="userx"
-                value={userx}
-             
-                onChange={getUserx}
+                value={e.user}
+                
+          
               />{" "}
             </FormControl> 
             <FormControl sx={{pl:"5px", m: 1, width: "50ch" }} variant="outlined">
               <TextField
+                     disabled
                 label="Tel"
                 id="tel"
-             value={tel}
-              
-            onChange={getTel}
+             value={e.tel}
+             
+       
               />{""}
             </FormControl>
+         
             <br />
             <FormControl sx={{ pl:"5px",m: 1, width: "50ch" }} variant="outlined">
               <TextField
+                     disabled
                 label="Password"
                 id="passx"
-                value={passx}
-           
-                onChange={getPassx}
+                value={e.password}
+             
+            
               />{" "}
             </FormControl>
-          <FormControl sx={{pl:"5px", m: 1, width: "50ch" }} variant="outlined">
+            <FormControl sx={{pl:"5px", m: 1, width: "50ch" }} variant="outlined">
               <TextField
+                 disabled
                 label="Email"
                 id="email"
-              value={email}
-            
-            onChange={getEmail}
+              value={e.email}
+             
+    
               />{""}
             </FormControl>
+         
             <br />
             <FormControl sx={{m: 1, width: "25ch" }} variant="outlined">
-              <TextField label="Name" id="name" 
-              value={name}  
-              onChange={getName} />{" "}
+              <TextField disabled label="Name" id="name" 
+              value={e.name}  
+           />{" "}
               
             </FormControl>
               <FormControl>
-              <TextField variant="outlined" sx={{mt:1, width: "25ch" ,mr:"5px" }} label="LastName" id="lastname" 
-              value={lastname}  
-             
-              onChange={getLastName}
+              <TextField disabled variant="outlined" sx={{mt:1, width: "25ch" ,mr:"5px" }} label="LastName" id="lastname" 
+              value={e.lastname}  
+          
+           
             />{""}
               </FormControl>
               <FormControl sx={{pl:"5px", m: 1, width: "50ch" }} variant="outlined">
               <InputLabel id="demo-simple-select-label">Role</InputLabel>
               <Select
+                     disabled
                 labelId="demo-simple-select-label"
                 id="rolex"
-                value={rolex}
+                value={e.role}
                 label="Role"
-             
-                onChange={getRolex}
+               
+          
               >
                 <MenuItem value="admin">admin</MenuItem>
                 <MenuItem value="user">user</MenuItem>
-              </Select>
-            </FormControl>
-              <FormControl sx={{pl:"5px", m: 1, width: "1000px" }} variant="outlined">
-              <Card variant="outlined"
-        sx={{
-          m:"auto",mt:"10px", p: '10px', maxWidth: 850, m:"10px",
-        }} >
-            <div className="container">
-              
-      <div {...getRootProps({className: 'dropzone'})}>
-        <input {...getInputProps()} />
-        <p>Drag 'n' drop some files here</p>
-        <button type="button" onClick={open}>
-          Open File Dialog
-        </button>
-      </div>
-      <aside>
-        <h4>Files</h4>
-        <ul>{files}</ul>
-      </aside>
-    </div> </Card>
-    </FormControl>
-
-            </Box>
-    <Box sx={{display:"flex",justifyContent: 'center',alignItems:'center'}}>
-            <Button
-              variant="contained"
-              sx={{ m: 1, width: "20ch" }}
-              onClick={getUsers} color= 'primary'
-            >
-              Save
-            </Button>
-     </Box>
-         
+              </Select>     
+             
+            </FormControl>  
+            <br />
+            <Box sx={{display:"flex",justifyContent: 'center',alignItems:'center'}}>
+            <Link  to="/editprofile" state={{sname:e}}>
+          <Button sx={{m:'10px',}} variant="contained" >Edit</Button>
+             </Link>
+             </Box>
         </Card>
         </Box>
-        </Box>
-    );
+           ))}
+
+      </Box>
+  );
 }
-export default AddTeach;
+export default Profile;
+//{user.map((e)=>(               ))} 

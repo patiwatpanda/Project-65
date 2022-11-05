@@ -14,8 +14,10 @@ import { reactLocalStorage } from "reactjs-localstorage";
 import CardHeader from '@mui/material/CardHeader';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
+
 import Card from '@mui/material/Card';
 import Paper from "@mui/material/Paper";
+import { useLocation } from 'react-router-dom';
 import "./AddSubject.css";
 import {useDropzone} from 'react-dropzone';
 //import { reactLocalStorage } from "reactjs-localstorage";
@@ -29,30 +31,34 @@ import {
   where,
   updateDoc,
   arrayUnion,
+  documentId
 } from "firebase/firestore";
 import { ref,getDownloadURL, uploadBytes} from '@firebase/storage'
 import { upload } from "@testing-library/user-event/dist/upload";
-function AddTeach() {
-  const linkpicture = reactLocalStorage.getObject("Xuser")[0]?.imges
-  const nameProfile = reactLocalStorage.getObject("Xuser")[0]?.name
-  const lastnameProfile = reactLocalStorage.getObject("Xuser")[0]?.lastname
-  const emailProfile = reactLocalStorage.getObject("Xuser")[0]?.email
-  const telProfile = reactLocalStorage.getObject("Xuser")[0]?.tel
-    const [userx, setUserx] = useState([]);
-    const [name, setName] = useState("");
-    const [passx, setPassx] = useState("");
-    const [rolex, setRolex] = useState("");
-    const [email, setEmail] = useState("");
-    const [lastname, setLasName] = useState("");
-    const [tel,setTel] = useState("");
+function EditProfile() {
+ 
+  const id = reactLocalStorage.getObject("Xuser")[0]?.id
+  const userarray =reactLocalStorage.getObject("Xuser")[0]
+console.log(userarray,"aa")
+const location = useLocation();
+    const [userx, setUserx] = useState(location.state?.sname?.user);
+    console.log(userx,"aaaa");
+    const [name, setName] = useState(location.state?.sname?.name);
+    const [passx, setPassx] = useState(location.state?.sname?.password);
+    const [rolex, setRolex] = useState(location.state?.sname?.role);
+    const [email, setEmail] = useState(location.state?.sname?.email);
+    const [lastname, setLasName] = useState(location.state?.sname?.lastname);
+    const [tel,setTel] = useState(location.state?.sname?.tel);
+    const [image,setImage] = useState(location.state?.sname?.image);
+    const [user,setUser] = useState([]);
     const [picture, setPicture] = useState([]);
-    const [after, setAfter] = useState(0);
+  //  const [after, setAfter] = useState(0);
     //  const usersCollectionRef = collection(db, "user");
-    const [equal, setEqual] = useState(0);
+ //   const [equal, setEqual] = useState(0);
     const [userror, setUserror] = useState(false);
     const [passerror, setPasserror] = useState(false);
     const [add, setUsers] = useState([]);
-    const usersCollectionRef = collection(db, "addteach");
+    const usersCollectionRef = collection(db, "user");
     const {getRootProps, getInputProps, open, acceptedFiles} = useDropzone({
       // Disable click and keydown behavior
       noClick: true,
@@ -65,6 +71,20 @@ function AddTeach() {
         {file.path} - {file.size} bytes
       </li>
     ));
+    console.log(id,"ss");
+    /** 
+    const getUser = async ()=>{
+      const q = query(usersCollectionRef,where(documentId(),"==",id));
+      console.log(q,"Error");
+      const data = await getDocs(q);
+      if (data.docs.length >= 1) {
+        setUser(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+     //reactLocalStorage.setObject('Xuser', data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      }
+      else{
+          console.log("Error");
+      }
+    };*/
     const getUserx = (e) => {
         setUserx(e.target.value);
       };
@@ -86,13 +106,9 @@ function AddTeach() {
       const getTel =(e)=>{
         setTel(e.target.value);
       }
-      const getPicture = async () => {
-        const q = query(usersCollectionRef);
-        const data = await getDocs(q);
-       
-        setPicture(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      }
+
     const getUsers = async (e) => {
+        e.preventDefault();
         const q = query(collection(db, "user"), where("user", "==", userx));
         const data = await getDocs(q);
         console.log(data, " +++");
@@ -104,7 +120,7 @@ function AddTeach() {
           setUserror(false);
           setPasserror(false);
           if (userx != "" && passx != ""&&name!=""&&rolex != "") {
-           const docRef=  await addDoc(collection(db, "user"), {
+           const docRef=  await updateDoc(doc(db, "user",id), {
               user: userx,
               password: passx,
               role: rolex,
@@ -115,15 +131,14 @@ function AddTeach() {
             })
             await Promise.all(
               acceptedFiles.map(image=>{
-                     const imageRef = ref(storage, `user/${docRef.id}/${image.path}`)
+                     const imageRef = ref(storage, `user/${docRef}/${image.path}`)
                      console.log(imageRef,"55")
                       uploadBytes(imageRef, image,"date_url").then(async()=>{
                         const downloadURL = await getDownloadURL(imageRef)
                         await updateDoc(doc(db,"user",docRef.id),{
-                          image:arrayUnion(downloadURL) 
-                       
-                        })  
-              window.location.reload()        }) 
+                          imges:arrayUnion(downloadURL)
+                        })
+                      })
                     })
          )
               .then((res) => {
@@ -136,7 +151,7 @@ function AddTeach() {
                 setLasName("");
                 setEmail("");
                 setTel("");
-              
+              // window.location.reload()
               })
               .catch((err) => {
                 console.log(err);
@@ -149,6 +164,11 @@ function AddTeach() {
           }
         }
       };
+     
+      useEffect(()=>{
+     //   getUser();
+      })
+     
     return(
       <Box
       sx={{
@@ -159,9 +179,9 @@ function AddTeach() {
 
         borderRadius: 1,
       }}
-    >
-    
-          <Box sx={{display:"flex",justifyContent: 'center',}}  >
+    >       
+
+<Box sx={{display:"flex",justifyContent: 'center',}}  >
         <Card   variant="outlined"
         sx={{
           m:"auto",mt:"10px", p: 0, maxWidth: 920, mr:"10px",
@@ -184,7 +204,7 @@ function AddTeach() {
                 fontWeight: "500",
               }}
             >
-           Create User
+           Profile
             </Typography>
           </Box>
          </Box>
@@ -252,7 +272,7 @@ function AddTeach() {
                 id="rolex"
                 value={rolex}
                 label="Role"
-             
+                disabled
                 onChange={getRolex}
               >
                 <MenuItem value="admin">admin</MenuItem>
@@ -290,10 +310,55 @@ function AddTeach() {
               Save
             </Button>
      </Box>
-         
+   
         </Card>
         </Box>
+  
+        <Box   sx={{  }} >
+        <Card   variant="outlined"
+        sx={{
+         m:"auto",mt:"10px", p: 0, maxWidth: 450
+        }}>
+          <CardHeader color="danger"  title=""/>
+              
+            
+      
+            <Box
+          sx={{
+            padding: "15px ",display:"flex",justifyContent:'center', // flexDirection: 'column'
+          }}
+     
+      //   alignItems="center"
+          
+        
+        >
+            <br />
+          
+<Box sx={{display:"flex",alignItems:'center',justifyContent: 'center',flexDirection: 'column' }}>
+       
+               <Avatar
+     alt="Remy Sharp"
+     src={image}
+     sx={{ display:"flex",justifyContent: 'center' ,width: 150, height: 150 }}
+   /> 
+ <br/>
+         <Typography  sx={{display:"flex",justifyContent: 'center'}}variant="subtitle1" gutterBottom>
+       Name:{name} {lastname}
+      </Typography>
+  
+      <Typography  sx={{display:"flex",justifyContent: 'center'}}variant="subtitle1" gutterBottom>
+          Email:{email}
+      </Typography>
+      <Typography  sx={{display:"flex",justifyContent: 'center'}}variant="subtitle1" gutterBottom>
+          Tel:{tel}
+      </Typography>
+          </Box>
+         </Box>
+        </Card>
+        </Box>
+       
         </Box>
     );
 }
-export default AddTeach;
+export default EditProfile;
+//      {user.map((e)=>(   ))}

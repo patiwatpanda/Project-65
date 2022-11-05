@@ -61,6 +61,7 @@ function AddNewFile() {
 */
 const nameuser = reactLocalStorage.getObject("Xuser")[0]?.user;
 const role = reactLocalStorage.getObject("Xuser")[0]?.role;
+const keyuser = reactLocalStorage.getObject("Xuser")[0]?.id;
 const getCommentvideo =(e)=> {
   setCommenvideo(e.target.value);
 }
@@ -90,6 +91,7 @@ const handleSubmit = async (e) => {
     name: nameidd,
     idtop:idtop,
     commentvideo:commentvideo,
+    userid:keyuser
   })
     .then((res) => {
       console.log("User ed");
@@ -100,6 +102,7 @@ const handleSubmit = async (e) => {
       setIDtop("");
       setCommenvideo("");
       window.location.reload()
+     // window.location.href = "/home"
     })
     .catch((err) => {
       console.log(err);

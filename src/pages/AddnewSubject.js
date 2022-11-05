@@ -5,12 +5,14 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
+import Typography from '@mui/material/Typography';
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { db } from "../firebase-config";
 import { app } from "../firebase-config";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import Divider from '@mui/material/Divider';
 import { useLocation } from 'react-router-dom';
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
@@ -51,7 +53,7 @@ function AddnewSubject() {
     const [imagelink, setImage] = useState("");
     const usersCollectionRef = collection(db, "addteach");
     const [inputObject, setInputObject] = useState(projectsDefault);
-  
+    const keyuser = reactLocalStorage.getObject("Xuser")[0]?.id;
     const nameuser = reactLocalStorage.getObject("Xuser")[0]?.user;
     console.log(nameuser,"aa")
 const role = reactLocalStorage.getObject("Xuser")[0]?.role;
@@ -91,7 +93,7 @@ const role = reactLocalStorage.getObject("Xuser")[0]?.role;
               name: name,
               comment:comment,
               detail:detail,
-              user:nameuser,
+              user:keyuser,
               objectt:[...inputObject]
          //     id:[...inputObject.id]
             
@@ -171,11 +173,22 @@ const role = reactLocalStorage.getObject("Xuser")[0]?.role;
         setInputObject(values);
       }
     return(
-       
-      <div className="Boxmaster">
+   
+        
+      <Paper sx={{mt:"10px"}} className="Boxmaster">
+      <Typography
+              sx={{
+                fontSize: "20px",
+                fontWeight: "600",
+              }}
+            >
+           เพิ่มรายวิชา
+            </Typography>
+          
           <div className="Boxmastercenter">
+          <Divider  style={{width:'100%'}}/>
+
             <div>
-  
             <FormControl sx={{ m: 1, width: "50ch" }} variant="outlined">
               <TextField
                 label="รหัส"
@@ -232,8 +245,20 @@ const role = reactLocalStorage.getObject("Xuser")[0]?.role;
           </div>
      
         <br/> 
+        <Box sx={{ml:'360px', display: 'inline-flex'}}>
+      {
+       <Button 
+       variant="outlined"
+            sx={{  }}
+             onClick={handleAddFields}
+            >
+              <AddIcon />    
+            </Button>}
+         <br/>
+          </Box>
         {inputObject.map((inputobject, index) => ( <div key={index}  className="Boxmuilti">
-        <Box sx={{  ml: '180px', display: 'inline-flex'}}>
+          
+        <Box sx={{ mt:"10px", ml: '180px', display: 'inline-flex'}}>
         <br/>
         <TextField
           id="objective"
@@ -243,28 +268,22 @@ const role = reactLocalStorage.getObject("Xuser")[0]?.role;
           sx={{width:"50ch"}}
           value={inputobject.objectt}
           onChange={(e) => handleChangeInput(index,e)}
-        />
-             <br/>
-      </Box>
-      <Box sx={{ml:'10px', display: 'inline-flex'}}>
-      {
-       <Button 
-            sx={{  }}
-             onClick={handleAddFields}
-            >
-              <AddIcon />    
-            </Button>}
-         <br/>
-          {
+        /> 
+       
+       {
 
-            <Button 
-            sx={{ }}
-            disabled={index === 0} 
-            onClick={() => handleRemoveFields(inputobject.id)}
-             
-            >
-              <RemoveRoundedIcon />
-            </Button>} </Box>
+<Button 
+sx={{ml:"10px" }}
+variant="outlined"
+disabled={index === 0} 
+onClick={() => handleRemoveFields(inputobject.id)}
+ 
+>
+  <RemoveRoundedIcon />
+</Button>}
+             <br/>  <br/>
+      </Box>
+
             <br/>  </div>
             )  ) }
           
@@ -278,8 +297,8 @@ const role = reactLocalStorage.getObject("Xuser")[0]?.role;
         Save
       </Button>
     </div>
-          </div>
-       
+          </Paper>
+
      
     );
 }

@@ -63,6 +63,7 @@ function UpdateAddFile() {
 */
 const nameuser = reactLocalStorage.getObject("Xuser")[0]?.user;
 const role = reactLocalStorage.getObject("Xuser")[0]?.role;
+const keyuser = reactLocalStorage.getObject("Xuser")[0]?.id;
 const getCommentvideo =(e)=> {
   setCommenvideo(e.target.value);
 }
@@ -96,8 +97,8 @@ const handleSubmit = async (e) => {
     name: nameidd,
     idtop:idtop,
     commentvideo:commentvideo,
-
-  })
+    userid:keyuser
+  })  
     .then((res) => {
       console.log("User ed");
        alert("กรอกข้อมูลสำเร็จ");

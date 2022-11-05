@@ -15,6 +15,7 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
+import { reactLocalStorage } from "reactjs-localstorage";
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
@@ -25,7 +26,18 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import Avatar from '@mui/material/Avatar';
+import { db } from "../firebase-config";
 import { fontSize } from '@mui/system';
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  getDocs,
+  doc,
+  query,
+  where,
+  documentId
+} from "firebase/firestore";
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -66,13 +78,14 @@ const Search = styled('div')(({ theme }) => ({
     },
   }));
 function Navbar() {
+  const linkpicture = reactLocalStorage.getObject("Xuser")[0]?.image
     const [sidebar, setSidebar] = useState(false)
     const showSidebar = () => setSidebar(!sidebar)
     const mobileMenuId = 'primary-search-account-menu-mobile';
     const menuId = 'primary-search-account-menu';
     const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
+  const id = reactLocalStorage.getObject("Xuser")[0]?.id
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -87,8 +100,40 @@ function Navbar() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
-  };
 
+  };
+  
+  const handleLogoutClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    FLogout();
+  };
+  
+
+  function FLogout() {
+    reactLocalStorage.remove('Xuser');
+    window.location.href = "/"
+  }
+
+  const handleMenuCloseProfile = () => {
+    
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location.href = "/profile"
+  };
+  const handleMenuCloseEdit = async () => {
+    
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location.href = "/editprofile"
+    /* 
+    const q = query(collection(db, "user"), where(documentId(), "==", id), );
+    const data = await getDocs(q);
+    console.log(data)
+  
+    reactLocalStorage.setObject('Xuser', data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    window.location.href = "/editprofile"*/
+  };
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
@@ -122,9 +167,11 @@ function Navbar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      <MenuItem onClick={handleMenuClose}>LogOut</MenuItem>
+
+      <MenuItem onClick={handleMenuCloseProfile}>Profile</MenuItem>
+
+      <MenuItem onClick={handleMenuCloseEdit}>Edit</MenuItem>
+      <MenuItem onClick={handleLogoutClose}>LogOut</MenuItem>
     </Menu>
   );
 
@@ -231,7 +278,7 @@ function Navbar() {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-           <Avatar alt="Remy Sharp" src="https://us-fbcloud.net/picpost/data/184/184340-1-2995.jpg" />
+           <Avatar alt="Remy Sharp" src={linkpicture}/>
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>

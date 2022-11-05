@@ -3,6 +3,8 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -17,6 +19,7 @@ import TableHead from "@mui/material/TableHead";
 //import { DropzoneArea } from 'material-ui-dropzone';
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import {useDropzone} from 'react-dropzone';
 import AddIcon from '@mui/icons-material/Add';
 import { reactLocalStorage } from "reactjs-localstorage";
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
@@ -102,7 +105,8 @@ function AddSubject() {
               setComment("");
               setDetail("");
               setInputObject([...inputObject, {id: '',  objectt: '' }]);
-              window.location.reload()
+             // window.location.reload()
+             window.location.href = "/home"
             })
             .catch((err) => {
               console.log(err);
@@ -137,43 +141,36 @@ function AddSubject() {
           return { ...shareholder, id:uuidv4(),objectt: e.target.value };
         });
         setInputObject(newShareholders);
-     /*    const value = e.target.value;
-        const newInputFields = inputObject.map((i,ii) => {
-          if(index === i.objectid) {
-         
-            i[e.target.name] = value 
-        
-          }
-          return i;
-        })   */
-       // console.log(id ,"sss");
-       // setInputObject(newInputFields);  setInputObject({...inputObject, [e.target.name] :  value  });
-   
-     //    setInputObject({...inputObject[index], [e.target.name] :  e.target.value })///**/
-    
-   //  const {name,value} = e.target ;
-    //  const name = e.target.name;
-  //    const valuess = e.target.value; 
-     /* const list = [...inputObject] ;
-    
-    console.log('name', e.target.name);
-    console.log('value', e.target.value ); 
-      list[index][e.target.name] = e.targetvalue;
-      setInputObject(list);
-     */
-     //setInputObject({ ...list, [prop][index]: e.target.value })
       };
-      const handleRemoveFields = (id) => {
+   
+      const handleRemoveFields = (index,id) => {
         const values  = [...inputObject];
-        values.splice(values.findIndex(value => value.id === id), 1);
+        if(index>0){
+           values.splice(values.findIndex(value => value.id === id ), 1);
         setInputObject(values);
-      }
+        }
+       
+      }   /* */
     return(
        
-      <div className="Boxmaster">
+      <Paper sx={{mt:"10px"}} className="Boxmaster">
+        <Box flexGrow={1} component="div">
+            <Typography
+             variant="h4"
+              sx={{
+                fontSize: "25px",
+                fontWeight: "600",
+              }}
+            >
+         แก้รายวิชา
+            </Typography>
+           
+          </Box> 
+          <Divider  style={{width:'100%'}}/>
           <div className="Boxmastercenter">
+          
             <div>
-  
+            
             <FormControl sx={{ m: 1, width: "50ch" }} variant="outlined">
               <TextField
                 label="รหัส"
@@ -228,10 +225,20 @@ function AddSubject() {
         />    </div> 
   
           </div>
-     
+          <Box sx={{mt:"10px",ml:'360px', display: 'inline-flex'}}>
+      {
+       <Button 
+       variant="outlined"
+            sx={{  }}
+             onClick={handleAddFields}
+            >
+              <AddIcon />    
+            </Button>}
+         <br/>
+          </Box>
         <br/> 
         {inputObject.map((inputobject, index) => ( <div key={index}  className="Boxmuilti">
-        <Box sx={{  ml: '180px', display: 'inline-flex'}}>
+        <Box sx={{mt:"10px"  ,ml: '180px', display: 'inline-flex'}}>
         <br/>
         <TextField
           id="objective"
@@ -243,26 +250,19 @@ function AddSubject() {
           onChange={(e) => handleChangeInput(index,e)}
         />
              <br/>
+    {
+    <Button 
+    sx={{ml:"10px" }}
+    variant="outlined"
+    disabled={index === 0} 
+    onClick={() => handleRemoveFields(inputobject.id)}
+ 
+    >
+  <RemoveRoundedIcon />
+</Button>
+}         
       </Box>
-      <Box sx={{ml:'10px', display: 'inline-flex'}}>
-      {
-       <Button 
-            sx={{  }}
-             onClick={handleAddFields}
-            >
-              <AddIcon />    
-            </Button>}
-         <br/>
-          {
-
-            <Button 
-            sx={{ }}
-            disabled={index === 0} 
-            onClick={() => handleRemoveFields(inputobject.id)}
-             
-            >
-              <RemoveRoundedIcon />
-            </Button>} </Box>
+   
             <br/>  </div>
             )  ) }
           
@@ -276,7 +276,7 @@ function AddSubject() {
         Save
       </Button>
     </div>
-          </div>
+          </Paper>
        
      
     );
